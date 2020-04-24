@@ -1,0 +1,21 @@
+local tool = script.Parent
+local cooldown = script.Cooldown.Value
+local animation = Instance.new("Animation")
+animation.AnimationId = "rbxassetid://4937023759"
+
+
+tool.Activated:Connect(function()
+	local humanoid = tool.Parent:FindFirstChildWhichIsA('Humanoid')
+	if humanoid and cooldown == false then
+		cooldown = true
+		local playanim = humanoid:LoadAnimation(animation)
+		print("rodou")
+		playanim:Play()
+        tool.Espadao.Damage.Disabled = false
+		wait(0.25)
+		
+        tool.Espadao.Damage.Disabled = true
+		wait(0.5)
+		cooldown = false
+	end
+end)
