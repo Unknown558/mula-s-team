@@ -1,0 +1,57 @@
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+
+local maxStamina = 500
+local staminaRegen = 2
+
+local sprintModifier = 1.8
+local sprintStaminaCost = 5
+local sprintingPlayers = {}
+---print("aqui foi")
+players.PlayerAdded:Connect(function(player)
+	local stamina = Instance.new("IntValue", player)
+	stamina.Value = maxStamina
+	stamina.Name = "Stamina"
+	---print("aqui tbm")
+	stamina.Changed:Connect(function(property)
+		replicatedStorage.RemoteEvents.StaminaUpdate:FireClient(player, stamina.Value, maxStamina)
+		--print("aqui tbm 2")
+	end)
+end)
+
+replicatedStorage.RemoteEvents.Sprint.OnServerEvent:Connect(function(player, state)
+	local humanoid = player.Character.Humanoid
+	---print("passo 1")
+	if state == "Began" then
+		---print("passo 2")
+		sprintingPlayers[player.Name] = humanoid.WalkSpeed
+		humanoid.WalkSpeed = 64
+	elseif state == "Ended" and sprintingPlayers[player.Name] then
+		humanoid.WalkSpeed = sprintingPlayers[player.Name]
+		sprintingPlayers[player.Name] = nil
+	end
+end)
+
+runService.Heartbeat:Connect(function()
+	for index, player in pairs(players:GetChildren()) do
+		local stamina = player.Stamina
+		local name = player.Name
+		
+		if not sprintingPlayers[name] then
+			if stamina.Value > maxStamina then
+				stamina.Value = maxStamina
+			elseif stamina.Value < maxStamina then
+				stamina.Value = stamina.Value + staminaRegen
+			end
+			
+		else
+			if stamina.Value >= sprintStaminaCost then
+				stamina.Value = stamina.Value - sprintStaminaCost
+			else
+				player.Character.Humanoid.WalkSpeed = sprintingPlayers[name]
+				sprintingPlayers[name] = nil
+			end
+		end
+	end
+end)
