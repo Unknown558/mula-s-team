@@ -1,0 +1,20 @@
+local userInputService = game:GetService("UserInputService")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local players = game:GetService("Players")
+userInputService.InputBegan:Connect(function(input)
+	if input.KeyCode == Enum.KeyCode.LeftShift then
+		replicatedStorage.RemoteEvents.Sprint:FireServer("Began")
+		---print("began")
+	end
+end)
+
+userInputService.InputEnded:Connect(function(input)
+	if input.KeyCode == Enum.KeyCode.LeftShift then
+		---print("Ended")
+		replicatedStorage.RemoteEvents.Sprint:FireServer("Ended")
+	end
+end)
+
+replicatedStorage.RemoteEvents.StaminaUpdate.OnClientEvent:Connect(function(stamina, maxStamina)
+	players.LocalPlayer.PlayerGui.Stamina.stamina.bar.Size = UDim2.new(0, (stamina/maxStamina)*261,0,15)
+end)
