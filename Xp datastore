@@ -1,0 +1,62 @@
+local DataStoreService = game:GetService("DataStoreService")
+local myDataStore = DataStoreService:GetDataStore("MyDataStore")
+
+
+game.Players.PlayerAdded:Connect(function(player)
+	Data = Instance.new("IntValue",player)
+	Data.Name = "Data"
+	Level = Instance.new("IntValue",Data)
+	Level.Name = "Level"
+	Level.Value = 1
+	XP = Instance.new("IntValue",Data)
+	XP.Name = "XP"
+	local dat
+	local exp
+	local sucess, errormsg = pcall(function()
+		dat = myDataStore:GetAsync(player.UserId.."-level")
+		
+		--print(dat)
+	end)
+	
+	if sucess then
+		--print("entrouy")
+		Level.Value = dat
+		--print(Level.Value)
+		--print(dat)
+		
+	else
+		print("deu erro na linha 20 scritp xpstorage")
+		warn(errormsg)
+	end
+	
+	local suces, errorms = pcall(function()
+		exp = myDataStore:GetAsync(player.UserId.."-exp")
+	end)
+
+	
+	if suces then
+		--print("entrou")
+		XP.Value = exp
+		--print(XP.Value)
+		--print(exp)
+		
+	else
+		print("deu erro na linha 20 scritp xpstorage")
+		warn(errorms)
+	end
+	
+end)
+
+game.Players.PlayerRemoving:Connect(function(player)
+	local sucess, errormsg = pcall(function()
+		myDataStore:SetAsync(player.UserId.."-level", Level.Value)
+		myDataStore:SetAsync(player.UserId.."-exp", XP.Value)
+	
+	end)
+	if sucess then
+		print("stats salvo com sucesso")
+	else
+		print("stats nao salvo")
+		warn(errormsg)
+	end
+end)
