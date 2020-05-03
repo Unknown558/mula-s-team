@@ -1,0 +1,6 @@
+game.Players.PlayerAdded:Connect(function(plr)
+	game.ServerStorage.Give.Event:Connect(function(quantidade)
+		local dt = plr
+		dt.Data.XP.Value = dt.Data.XP.Value + quantidade
+	end)
+end)
