@@ -1,0 +1,27 @@
+
+script.Parent.Touched:Connect(function(hit)
+	local humanoid = hit.Parent:FindFirstChildWhichIsA('Humanoid')
+	
+	if humanoid then
+		humanoid:TakeDamage(4)
+		print(humanoid.Health)
+		if humanoid.Health <= 0 then
+			
+			local jogador = script.Parent.Parent.Parent.Name
+			print(jogador)
+			local Players = game:GetService("Players")
+			for i, player in pairs(Players:GetPlayers()) do
+   				print(player.Name)
+				print(i)
+				if player.Name == jogador then
+					player.Data.XP.Value = player.Data.XP.Value+25
+					print(player.Data.XP.Value)
+					wait(5)
+				end
+			end
+		end
+		
+    end 
+
+	
+end)
