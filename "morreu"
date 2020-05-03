@@ -1,0 +1,9 @@
+local mob = game.Workspace.Mob.Human
+print("aqui")
+mob.Died:Connect(function()
+	print("morreu")
+	local tag = mob:FindFirstChild("Creator") 
+	print(tag)
+	print(tag.Value)
+	--game.ServerStorage.Give:Fire(25)
+end)
